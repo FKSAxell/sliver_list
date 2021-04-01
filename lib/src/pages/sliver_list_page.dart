@@ -149,7 +149,7 @@ class _Titulo extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: 30,
+            height: 20,
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 30),
