@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SliverListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _MainScroll(),
+      body: Stack(
+        children: [
+          _MainScroll(),
+          Positioned(
+            bottom: -10,
+            right: 0,
+            child: _BotonNewList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BotonNewList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return ButtonTheme(
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Color(0xffED6762)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(50),
+              ),
+            ),
+          ),
+        ),
+        child: Container(
+          height: size.height * 0.1,
+          width: size.width * 0.8,
+          child: Center(
+            child: Text(
+              'CREATE A NEW LIST',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 3),
+            ),
+          ),
+        ),
+        onPressed: () {},
+      ),
     );
   }
 }
@@ -19,22 +66,79 @@ class _MainScroll extends StatelessWidget {
     _ListItem('Family', Color(0xffF2A38A)),
     _ListItem('Subscriptions', Color(0xffF7CDD5)),
     _ListItem('Books', Color(0xffFCEBAF)),
+    _ListItem('Orange', Color(0xffF08F66)),
+    _ListItem('Family', Color(0xffF2A38A)),
+    _ListItem('Subscriptions', Color(0xffF7CDD5)),
+    _ListItem('Books', Color(0xffFCEBAF)),
+    _ListItem('Orange', Color(0xffF08F66)),
+    _ListItem('Family', Color(0xffF2A38A)),
+    _ListItem('Subscriptions', Color(0xffF7CDD5)),
+    _ListItem('Books', Color(0xffFCEBAF)),
   ];
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
+        // SliverAppBar(
+        //   floating: true,
+        //   backgroundColor: Colors.red,
+        //   title: Text("Hola"),
+        // ),
+        SliverPersistentHeader(
           floating: true,
-          backgroundColor: Colors.red,
-          title: Text("Hola"),
+          delegate: _SliverCustomHeaderDelegate(
+            minHeight: 172,
+            maxHeight: 200,
+            child: Container(
+              alignment: Alignment.centerLeft,
+              color: Colors.white,
+              child: _Titulo(),
+            ),
+          ),
         ),
         SliverList(
-          delegate: SliverChildListDelegate(items),
+          delegate: SliverChildListDelegate(
+            [
+              ...items,
+              SizedBox(
+                height: 80,
+              )
+            ],
+          ),
         ),
       ],
     );
+  }
+}
+
+class _SliverCustomHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  _SliverCustomHeaderDelegate({
+    @required this.minHeight,
+    @required this.maxHeight,
+    @required this.child,
+  });
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(_SliverCustomHeaderDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }
 
